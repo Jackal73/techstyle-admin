@@ -2,6 +2,8 @@ import Layout from "@/components/Layout";
 
 export default function Orders() {
   return (
-    <Layout>Orders</Layout>
+    <Layout>
+      <h1>Orders</h1>
+    </Layout>
   )
 }
