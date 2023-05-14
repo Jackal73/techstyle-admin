@@ -24,16 +24,17 @@ export default function OrdersPage() {
         <tbody>
           {orders.length > 0 && orders.map(order => (
             <tr key={order._id}>
-              <td>{order.createdAt}</td>
+              <td>{(new Date(order.createdAt)).toLocaleString()}</td>
               <td>{order.name} {order.email}<br />
                 {order.streetAddress}<br />
-                {order.city} {order.state}<br />
+                {order.city} {order.state}
                 {order.country} {order.postalCode}
               </td>
               <td>
                 {order.line_items.map(l => (
                   <>
-                  {JSON.stringify(l)}<br />
+                  {l.price_data?.product_data?.name} x {l.quantity}<br />
+                  {/* {JSON.stringify(l)}<br /> */}
                   </>
                 ))}
               </td>
