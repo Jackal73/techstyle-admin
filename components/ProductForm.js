@@ -22,13 +22,16 @@ export default function ProductForm({
   const [goToProducts, setGoToProducts] = useState( false);
   const [isUploading, setIsUploading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
 
   const router = useRouter();
   console.log({_id})
 
   useEffect(() => {
+    setCategoriesLoading(true);
     axios.get('/api/categories').then(result => {
       setCategories(result.data);
+      setCategoriesLoading(false);
     })
   }, [])
 
@@ -104,12 +107,17 @@ function setProductProp(propName, value) {
       <select value={category} onChange={ev => setCategory(ev.target.value)}>
         <option value="">Uncategorized</option>
         {categories.length > 0 && categories.map(c => (
-          <option value={c._id}>{c.name}</option>
+          <option key={c._id} value={c._id}>{c.name}</option>
         ))}
       </select>
+      {categoriesLoading && (
+        // <div className="py-4">
+          <Spinner />
+        // </div>
+      )}
 
       {propertiesToFill.length > 0 && propertiesToFill.map((p => (
-        <div className="">
+        <div key={p.name} className="">
           <label>{p.name[0].toUpperCase()+p.name.substring(1)}</label>
 
           <div className="">
@@ -117,7 +125,7 @@ function setProductProp(propName, value) {
             onChange={ev => setProductProp(p.name, ev.target.value)
             }>
               {p.values.map(v => (
-                <option value={v}>{v}</option>
+                <option key={v} value={v}>{v}</option>
               ))}
             </select>
           </div>
