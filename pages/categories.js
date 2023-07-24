@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import Spinner from "@/components/Spinner";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { withSwal } from 'react-sweetalert2';
@@ -9,14 +10,17 @@ function Categories({swal}) {
   const [parentCategory, setParentCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [properties, setProperties] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
       fetchCategories();
   }, []);
 
   function fetchCategories() {
+    setIsLoading(true);
     axios.get('/api/categories').then(result => {
       setCategories(result.data);
+      setIsLoading(false);
     });
   }
 
@@ -132,7 +136,7 @@ function Categories({swal}) {
           >
             <option value="">No parent category</option>
             {categories.length > 0 && categories.map(category => (
-              <option value={category._id}>{category.name}</option>
+              <option key={category._id} value={category._id}>{category.name}</option>
             ))}
           </select>
         </div>
@@ -141,7 +145,7 @@ function Categories({swal}) {
           <label className="block">Properties</label>
           <button onClick={addProperty} type="button" className="btn-default text-sm mb-2">Add new property</button>
           {properties.length > 0 && properties.map((property, index) =>(
-            <div className="flex gap-1 mb-2">
+            <div key={index} className="flex gap-1 mb-2">
               <input type="text"
                 value={property.name}
                 className="mb-0"
@@ -188,13 +192,21 @@ function Categories({swal}) {
         <table className="basic mt-4">
           <thead>
             <tr>
-            <td>Category name</td>
-            <td>Parent category</td>
-            <td></td>
+              <td>Category name</td>
+              <td>Parent category</td>
+              <td></td>
             </tr>
           </thead>
-
           <tbody>
+          {isLoading && (
+            <tr>
+              <td colSpan={3}>
+              <div className="py-4">
+                <Spinner fullWidth={true} />
+              </div>
+              </td>
+            </tr>
+          )}
             {categories.length > 0 && categories.map(category => (
               <tr key={category._id}>
                 <td>{category.name}</td>
@@ -215,7 +227,7 @@ function Categories({swal}) {
             ))}
           </tbody>
         </table>
-       )}
+      )}
     </Layout>
   )
 }
